@@ -7,8 +7,8 @@ const text = getText(file)
 const words = getAllWords(text)
 const singleWords = getSingleWords(words)
 
-console.log('Total words: ' + words.length)
-console.log('Number of single words: ')
+console.log('\nTotal words: ' + words.length + '\n')
+console.log('Number of single words:' + '\n-----------------------')
 singleWords.forEach(entry => console.log(entry[0] + ': ' + entry[1]))
 
 function getAllowedSigns() {
