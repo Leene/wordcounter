@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 const fs = require('fs')
 const file = process.argv[2]
+
 const allowedSigns = getAllowedSigns()
 const text = getText(file)
-const words = getWordsFromText(text)
+const words = getAllWords(text)
 const singleWords = getSingleWords(words)
-const singleWordsArr = Object.entries(singleWords)
 
 console.log('Total words: ' + words.length)
 console.log('Number of single words: ')
-singleWordsArr.forEach(entry => console.log(entry[0] + ': ' + entry[1]))
+singleWords.forEach(entry => console.log(entry[0] + ': ' + entry[1]))
 
 function getAllowedSigns() {
   const config = getConfigJSON('config.json')
@@ -31,7 +31,7 @@ function getText(file) {
   }
 }
 
-function getWordsFromText(textString) {
+function getAllWords(textString) {
   if (!textString) return ['']
   const chunks = textString.split(' ')
   const words = chunks.map(chunk => {
@@ -48,7 +48,7 @@ function getSingleWords(words) {
       ? (singleWords[word] += 1)
       : (singleWords[word] = 1)
   })
-  return singleWords
+  return Object.entries(singleWords)
 }
 
 function getConfigJSON(config) {
