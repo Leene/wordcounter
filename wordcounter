@@ -1,0 +1,68 @@
+#!/usr/bin/env node
+const fs = require('fs')
+const file = process.argv[2]
+const allowedSigns = getAllowedSigns()
+const text = getText(file)
+const words = getWordsFromText(text)
+const singleWords = getSingleWords(words)
+const singleWordsArr = Object.entries(singleWords)
+
+console.log('Total words: ' + words.length)
+console.log('Number of single words: ')
+singleWordsArr.forEach(entry => console.log(entry[0] + ': ' + entry[1]))
+
+function getAllowedSigns() {
+  const config = getConfigJSON('config.json')
+  const string = config.allowedSigns
+  if (!string) {
+    console.warn('No allowed signs found!')
+    return ''
+  }
+  return string.split('')
+}
+
+function getText(file) {
+  try {
+    const data = fs.readFileSync(file)
+    return data.toString()
+  } catch (err) {
+    console.error(err, '\nNo text found!')
+    return ''
+  }
+}
+
+function getWordsFromText(textString) {
+  if (!textString) return ['']
+  const chunks = textString.split(' ')
+  const words = chunks.map(chunk => {
+    const chars = chunk.split('')
+    return chars.reduce(deleteCorruptSigns, '')
+  })
+  return words
+}
+
+function getSingleWords(words) {
+  const singleWords = {}
+  words.forEach(word => {
+    singleWords.hasOwnProperty(word)
+      ? (singleWords[word] += 1)
+      : (singleWords[word] = 1)
+  })
+  return singleWords
+}
+
+function getConfigJSON(config) {
+  try {
+    const buffer = fs.readFileSync(config)
+    const json = JSON.parse(buffer)
+    return json
+  } catch (err) {
+    console.log(err)
+    return -1
+  }
+}
+
+function deleteCorruptSigns(acc, cur) {
+  cur = allowedSigns.indexOf(cur) !== -1 ? cur : ''
+  return acc + cur
+}
