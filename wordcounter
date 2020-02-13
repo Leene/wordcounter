@@ -62,7 +62,7 @@ function getConfigJSON(config) {
 function deleteCorruptSigns(chunk) {
   const chars = chunk.split('')
   const word = chars.reduce((acc, cur) => {
-    cur = allowedSigns.indexOf(cur) !== -1 ? cur : ''
+    cur = allowedSigns.includes(cur) ? cur : ''
     return acc + cur
   }, '')
   return word
